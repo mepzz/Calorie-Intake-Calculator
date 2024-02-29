@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calorie Intake Calculator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Calorie Intake Calculator</h1>
+        </header>
+        <main>
+            <section class="calorie-info">
+                <h2>How many calories you'll need to intake</h2>
+                <!-- Placeholder for Calorie Information -->
+                <div class="calories-placeholder"></div>
+            </section>
+            <section class="input-form">
+                <h2>Enter Your Details</h2>
+                <form id="detailsForm">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" name="age" required>
+
+                    <label for="sex">Sex:</label>
+                    <select id="sex" name="sex" required>
+                        <option value="">Select...</option>
+                        <option value="female">Female</option>
+                        <option value="male">Male</option>
+                    </select>
+
+                    <label for="heightFeet">Height (feet):</label>
+                    <input type="number" id="heightFeet" name="heightFeet" required>
+
+                    <label for="heightInches">Height (inches):</label>
+                    <input type="number" id="heightInches" name="heightInches" required>
+
+                    <label for="weight">Weight:</label>
+                    <input type="number" id="weight" name="weight" required>
+
+                    <label for="goalWeight">Goal Weight:</label>
+                    <input type="number" id="goalWeight" name="goalWeight" required>
+
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate" required>
+
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate" required>
+
+                    <input type="submit" value="Calculate">
+                </form>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Alexx. All rights reserved.</p>
+            <p>Disclaimer: The information provided by our Calorie Intake Calculator is for general informational purposes only. All information on the site is provided in good faith, however, we make no representation or warranty of any kind, express or implied, regarding the accuracy, adequacy, validity, reliability, availability, or completeness of any information on the site. Under no circumstance shall we have any liability to you for any loss or damage of any kind incurred as a result of the use of the site or reliance on any information provided on the site. Your use of the site and your reliance on any information on the site is solely at your own risk.</p>
+            <p>Privacy Policy: We are committed to protecting your privacy. Personal information collected through our website at the time of the calorie calculation is not stored, shared, or sold to any third parties without your consent, except as required by law.</p>
+            <p>This site and its components are offered for informational purposes only; this site shall not be responsible or liable for the accuracy, usefulness, or availability of any information transmitted or made available via the site, and shall not be responsible or liable for any error or omissions in that information.</p>
+        </footer>        
+    </div>
+
+<script>
+document.getElementById('detailsForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent the form from submitting in the traditional way
+
+    // Get user input values
+    var age = parseInt(document.getElementById('age').value, 10);
+    var sex = document.getElementById('sex').value;
+    var heightFeet = parseInt(document.getElementById('heightFeet').value, 10);
+    var heightInches = parseInt(document.getElementById('heightInches').value, 10);
+    var weight = parseInt(document.getElementById('weight').value, 10);
+    var goalWeight = parseInt(document.getElementById('goalWeight').value, 10);
+    var startDate = new Date(document.getElementById('startDate').value);
+    var endDate = new Date(document.getElementById('endDate').value);
+
+    // Convert height to cm
+    var heightInCm = ((heightFeet * 12) + heightInches) * 2.54;
+    // Convert weight to kg
+    var weightInKg = weight * 0.453592;
+
+    // Calculate BMR based on sex, using the Mifflin-St Jeor Equation
+    var BMR;
+    if(sex === 'male') {
+        BMR = 10 * weightInKg + 6.25 * heightInCm - 5 * age + 5;
+    } else {
+        BMR = 10 * weightInKg + 6.25 * heightInCm - 5 * age - 161;
+    }
+
+    // Calculate the number of days between the start and end dates
+    var timeDiff = endDate.getTime() - startDate.getTime();
+    var daysDiff = timeDiff / (1000 * 3600 * 24);
+
+    // Calculate total calories needed to lose (weight - goalWeight) in pounds
+    var totalCaloriesNeeded = (weight - goalWeight) * 3500;
+
+    // Calculate daily calorie deficit needed
+    var dailyCalorieDeficit = totalCaloriesNeeded / daysDiff;
+
+    // Calculate daily calorie intake needed
+    var dailyCalorieIntake = BMR - dailyCalorieDeficit;
+
+    // Display the result
+    var caloriesElement = document.querySelector('.calories-placeholder');
+    if(dailyCalorieIntake > 0) {
+        caloriesElement.textContent = "To reach your goal weight by " + endDate.toDateString() + ", you'll need a calorie intake of " + dailyCalorieIntake.toFixed(2) + " calories per day or less.";
+    } else {
+        caloriesElement.textContent = "Your goal is not realistically possible within the given timeframe. Please adjust your goal weight or timeframe.";
+    }
+});
+</script>
+
+</body>
+</html>
